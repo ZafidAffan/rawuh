@@ -1,0 +1,141 @@
+Jadi karena disini saya pake, google calendar, maka user perlu sign in pake google
+
+
+✅Langkah 1: Dapatkan Client ID Google
+Buka Google Cloud Console
+
+Pilih proyek yang digunakan untuk integrasi Google Sign-In.
+
+Buka "API & Services" > "Credentials".
+
+Klik "Create Credentials" > "OAuth 2.0 Client IDs".
+
+Pilih "Web Application" sebagai jenis aplikasi.
+
+Di bagian Authorized JavaScript origins, tambahkan:
+http://localhost:52847/ (untuk pengujian lokal)
+http://localhost:52847/zUEfGm7IfTg=/ws (jika ada)
+Simpan dan salin Client ID.
+
+
+✅ Langkah 2: Tambahkan Client ID ke index.html
+Buka file web/index.html.
+
+Tambahkan meta tag berikut di dalam <head>:
+<meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+Ganti YOUR_CLIENT_ID dengan Client ID yang Anda dapatkan dari Google Cloud Console.
+
+✅ Langkah 3: Pastikan Client ID Ditetapkan di Kode Flutter
+Jika Anda ingin menginisialisasi Google Sign-In secara eksplisit di dalam kode Dart, lakukan seperti ini:
+
+final GoogleSignIn googleSignIn = GoogleSignIn(
+  clientId: "YOUR_CLIENT_ID.apps.googleusercontent.com",
+  scopes: ['https://www.googleapis.com/auth/calendar'],
+);
+
+
+✅ Langkah 4: Bersihkan Cache dan Jalankan Ulang
+Setelah menambahkan Client ID, bersihkan cache dan jalankan ulang proyek Flutter Web:
+
+flutter clean
+flutter pub get
+flutter run -d chrome
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Kenapa Google Sign-In Diperlukan?
+Dalam kode Anda:
+
+dart
+Copy
+Edit
+final googleSignIn = GoogleSignIn(scopes: ['https://www.googleapis.com/auth/calendar']);
+final googleUser = await googleSignIn.signIn();
+final googleAuth = await googleUser?.authentication;
+Google Sign-In digunakan untuk:
+
+Memverifikasi identitas pengguna → Pastikan bahwa pengguna masuk dengan akun Google mereka.
+Mendapatkan akses token OAuth 2.0 → Token ini dibutuhkan agar aplikasi Anda bisa menambahkan acara ke Google Calendar menggunakan Google Calendar API.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Apakah Bisa Tanpa Google Sign-In?
+❌ Tidak bisa jika ingin menambahkan acara ke Google Calendar pengguna, karena Google mengharuskan autentikasi.
+✅ Bisa jika hanya ingin menampilkan kalender tanpa perlu modifikasi.
+
+Kalau Anda ingin solusi lain, apakah aplikasi ini hanya untuk melihat kalender atau memang harus bisa menambah event?
+
+
+
+
+
+                    STEP BY STEP
+Gambar ini menunjukkan halaman Google Cloud Console. Jika Anda ingin menggunakan Google Sign-In dan Google Calendar API, langkah berikutnya adalah:
+
+Buat atau pilih project
+
+- Klik "Select a project" di bagian atas.
+
+- Jika belum punya, buat project baru.
+
+- Aktifkan Google Calendar API
+
+- Buka API & Services → Library
+
+- Cari Google Calendar API dan klik Enable
+
+- Buat OAuth 2.0 Credentials untuk Google Sign-In
+
+Buka API & Services → Credentials
+Klik Create Credentials → OAuth 2.0 Client ID
+Pilih Application type: Web application
+Tambahkan Authorized JavaScript Origins dan Redirect URIs
+Simpan dan catat Client ID
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------    ----
+🔹 Langkah Selanjutnya: Tambahkan Scopes yang Diperlukan
+Klik tombol "ADD OR REMOVE SCOPES", lalu tambahkan scope berikut:
+
+Read-only akses ke kalender pengguna:
+
+
+https://www.googleapis.com/auth/calendar.readonly
+Jika aplikasi hanya perlu membaca event tanpa mengubahnya.
+Full akses ke Google Calendar (Baca & Tulis):
+
+
+https://www.googleapis.com/auth/calendar
+Jika aplikasi perlu membuat, mengedit, atau menghapus event di Google Calendar pengguna.
+Akses hanya untuk membuat event tanpa melihat semua event lainnya:
+
+
+https://www.googleapis.com/auth/calendar.events
+Jika aplikasi hanya membuat event tanpa melihat seluruh kalender pengguna.
+🔹 Setelah Menambahkan Scopes
+Klik Save & Continue
+Selesaikan pembuatan kredensial OAuth 2.0
+Setelah ini, Anda bisa menggunakan OAuth Client ID untuk mengintegrasikan Google Sign-In di Flutter. 🚀
+
+----------------------------------------------------------------------------------------------
+Pada langkah ini, Anda sedang memilih Application Type untuk OAuth Client ID. Karena aplikasi yang Anda kembangkan adalah aplikasi Flutter berbasis Android, maka pilih:
+
+✅ Pilihan yang Benar:
+🔹 Android (karena aplikasi Anda berbasis Android)
+
+📌 Langkah Selanjutnya:
+- Pilih Android sebagai Application Type.
+- Masukkan nama paket aplikasi (package name) yang sesuai dengan aplikasi Flutter Anda. Anda bisa menemukannya di:
+android/app/src/main/AndroidManifest.xml
+
+
+- Masukkan SHA-1 signing certificate fingerprint yang bisa didapat dengan menjalankan perintah berikut di terminal:
+keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android
+
+- Klik Create untuk mendapatkan Client ID dan Secret, yang akan digunakan dalam autentikasi OAuth di aplikasi Flutter Anda.
+
+
+
+Ciri-Ciri Google Sign-In Manual
+✅ Client ID di-hardcode langsung dalam kode, sehingga tidak bergantung pada google-services.json.
+✅ Cocok untuk Web karena pada platform ini Google Sign-In memang bisa menggunakan client ID secara langsung.
+❌ Tidak direkomendasikan untuk Android/iOS, karena biasanya Firebase Authentication membutuhkan google-services.json agar otentikasi berjalan dengan baik.
+

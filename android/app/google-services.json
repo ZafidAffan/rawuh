@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1070856469604",
+    "firebase_url": "https://appointmentapp-b9305-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "appointmentapp-b9305",
+    "storage_bucket": "appointmentapp-b9305.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070856469604:android:225553c288fbc955bf3371",
+        "android_client_info": {
+          "package_name": "com.example.appointment_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070856469604-h65fsngo2ktsb0gas0i4m5m91qfdbrev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.appointment_app",
+            "certificate_hash": "de77ee3664fcdec5a9c592b983c0dfaddffac4d2"
+          }
+        },
+        {
+          "client_id": "1070856469604-39fc5obosnklpm5jv83nhj8s9h8mor5k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeUlb3QV4zBqQkDj3LG2ZbyrK3MKaCLZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070856469604-39fc5obosnklpm5jv83nhj8s9h8mor5k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
