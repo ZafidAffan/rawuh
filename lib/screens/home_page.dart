@@ -23,24 +23,24 @@ class HomePage extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
+                      children: const [
+                        Text(
                           "Selamat Pagi 😊",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black87,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
+                        SizedBox(height: 4),
+                        Text(
                           "Restu Sofyan!",
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
+                        SizedBox(height: 4),
+                        Text(
                           "5220411082",
                           style: TextStyle(
                             fontSize: 14,
@@ -168,7 +168,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // ===== Widget Helper untuk Kartu Jadwal =====
+  // ===== Widget Helper untuk Kartu =====
   Widget _buildCard(String title, String imagePath, Color color) {
     return Expanded(
       child: Container(
@@ -190,7 +190,7 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: color.shade700,
+                  color: color.withOpacity(0.8), // 🔹 FIXED HERE
                 ),
               ),
             ],
@@ -200,6 +200,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  // ===== Widget Helper untuk Jadwal =====
   Widget _buildScheduleCard({
     required String title,
     required String subtitle,
@@ -222,8 +223,7 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(6),
