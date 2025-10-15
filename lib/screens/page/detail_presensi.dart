@@ -184,4 +184,3 @@ class _StatusBox extends StatelessWidget {
     );
   }
 }
-
