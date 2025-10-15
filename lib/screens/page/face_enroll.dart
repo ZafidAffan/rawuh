@@ -1,8 +1,59 @@
+import 'dart:async';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-class FaceEnrollPage extends StatelessWidget {
+class FaceEnrollPage extends StatefulWidget {
   const FaceEnrollPage({super.key});
+
+  @override
+  State<FaceEnrollPage> createState() => _FaceEnrollPageState();
+}
+
+class _FaceEnrollPageState extends State<FaceEnrollPage> {
+  CameraController? _controller;
+  Future<void>? _initializeControllerFuture;
+  bool _isFaceDetected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initCamera();
+  }
+
+  // 🔹 Inisialisasi kamera depan
+  Future<void> _initCamera() async {
+    final cameras = await availableCameras();
+    final frontCamera = cameras.firstWhere(
+      (camera) => camera.lensDirection == CameraLensDirection.front,
+    );
+
+    _controller = CameraController(frontCamera, ResolutionPreset.medium);
+    _initializeControllerFuture = _controller!.initialize();
+
+    if (mounted) {
+      setState(() {});
+    }
+
+    // 🔹 Simulasi face recognition success setelah 3 detik
+    // (nantinya kamu bisa ganti dengan logic deteksi wajah beneran)
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        _isFaceDetected = true;
+      });
+      _navigateToQRPage();
+    });
+  }
+
+  void _navigateToQRPage() {
+    Navigator.pushReplacementNamed(context, '/qrscan');
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +62,6 @@ class FaceEnrollPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // ===== APP BAR =====
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
@@ -35,68 +85,69 @@ class FaceEnrollPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 8),
             const Text(
               'Pindai Wajah',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
             const Text(
-              'Pindai wajah dengan mengarahkan wajah ke kamera untuk melakukan presensi',
+              'Arahkan wajah Anda ke kamera depan',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black54, fontSize: 13),
             ),
             const SizedBox(height: 24),
 
-            // ===== KOTAK KAMERA =====
+            // 🔹 Tampilan kamera sungguhan
             Container(
               width: double.infinity,
               height: 280,
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(16),
+                color: Colors.black,
               ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(
-                    LucideIcons.scanFace, // 🔹 pengganti faceId
-                    size: 100,
-                    color: Colors.grey,
-                  ),
-                  Positioned(
-                    top: 12,
-                    left: 12,
-                    child: Icon(
-                      LucideIcons.refreshCw,
-                      size: 22,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                ],
-              ),
+              clipBehavior: Clip.antiAlias,
+              child: (_controller != null &&
+                      _initializeControllerFuture != null)
+                  ? FutureBuilder(
+                      future: _initializeControllerFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return CameraPreview(_controller!);
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
+                    )
+                  : const Center(child: CircularProgressIndicator()),
             ),
 
             const SizedBox(height: 24),
 
-            // ===== PESAN DI BAWAH KOTAK =====
+            // 🔹 Pesan status
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.grey.shade300),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(Icons.warning_amber_rounded, color: Colors.grey),
-                  SizedBox(width: 10),
+                  Icon(
+                    _isFaceDetected
+                        ? Icons.check_circle
+                        : Icons.warning_amber_rounded,
+                    color: _isFaceDetected
+                        ? Colors.green
+                        : Colors.grey.shade600,
+                  ),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Mohon kedipkan mata untuk memastikan keaslian pengguna',
-                      style: TextStyle(fontSize: 13, color: Colors.black87),
+                      _isFaceDetected
+                          ? 'Wajah terdeteksi! Mengalihkan ke halaman QR...'
+                          : 'Mohon kedipkan mata untuk memastikan keaslian pengguna',
+                      style: const TextStyle(fontSize: 13),
                     ),
                   ),
                 ],
@@ -106,7 +157,7 @@ class FaceEnrollPage extends StatelessWidget {
         ),
       ),
 
-      // ===== BOTTOM NAVIGATION =====
+      // ===== Bottom Nav sama seperti sebelumnya =====
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
         color: Colors.white,
@@ -119,9 +170,8 @@ class FaceEnrollPage extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(LucideIcons.home),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/home');
-                },
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, '/home'),
               ),
               const SizedBox(width: 8),
               FloatingActionButton(
@@ -132,9 +182,8 @@ class FaceEnrollPage extends StatelessWidget {
               const SizedBox(width: 8),
               IconButton(
                 icon: const Icon(LucideIcons.user),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/profile');
-                },
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/profile'),
               ),
             ],
           ),
