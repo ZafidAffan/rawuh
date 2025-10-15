@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'page/detail_presensi.dart'; // 🔹 Import halaman detail presensi
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -94,13 +95,38 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Lengkapi"),
-                    const SizedBox(height: 6),
-                    const Text(
-                      "Presensi Anda!",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    // Baris atas: judul + tombol titik tiga
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Lengkapi"),
+                            SizedBox(height: 6),
+                            Text(
+                              "Presensi Anda!",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.more_vert, color: Colors.black54),
+                          onPressed: () {
+                            // 🔹 Navigasi ke halaman detail presensi
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DetailPresensiPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
+
+                    // Progress bar
                     LinearProgressIndicator(
                       value: 0.66,
                       color: primaryBlue,
@@ -190,7 +216,7 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: color.withOpacity(0.8), // 🔹 FIXED HERE
+                  color: color.withOpacity(0.8),
                 ),
               ),
             ],
